@@ -56,8 +56,6 @@ h5.mz = h5read(fN,'/mz');
 % Now start to read in the file
 for n = 1:numSlices
     
-    waitbar(n/numSlices,wb,[int2str(n) '/' int2str(numSlices)]);
-    
     % Generic name for this group (akin to a folder)
     name = ['/data/s' int2str(n) '/'];
     
@@ -69,13 +67,17 @@ for n = 1:numSlices
     
     % This is the z position
     data(n).zPos = h5read(fN,[name 'zPosition']);
-    
+        
+    % Update the waitbar...
+    waitbar(n/numSlices,wb,[int2str(n) '/' int2str(numSlices)]);
+
 end
 
 % Put into a single output structure
 h5.data = data;
 h5.meta = att;
 
+% Remove the waitbar.
 delete(wb);
 
 end
@@ -136,6 +138,7 @@ for n = 1:numA
     att{n,1} = info.Attributes(n).Name;
     att{n,2} = info.Attributes(n).Value;
     
+    % Alternatively (classier) call h5readatt(fN,'/','numSlices')
     if strcmp(att{n,1},'numSlices')
         numSlices = str2double(att{n,2});
     end
