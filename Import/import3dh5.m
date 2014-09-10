@@ -41,6 +41,9 @@ checkCorrect(fN);
 % Create a structure in which to store the data
 data = struct('op',[],'x',[],'zPos',[]);
 
+% Add a waitbar to keep the customer satisfied
+wb = waitbar(0,'Gathering necessary information','Name','import3dh5');
+
 % Get the file information, and hence the attributes and sizes
 info = h5info(fN);
 
@@ -52,6 +55,8 @@ h5.mz = h5read(fN,'/mz');
 
 % Now start to read in the file
 for n = 1:numSlices
+    
+    waitbar(n/numSlices,wb,[int2str(n) '/' int2str(numSlices)]);
     
     % Generic name for this group (akin to a folder)
     name = ['/data/s' int2str(n) '/'];
@@ -70,6 +75,8 @@ end
 % Put into a single output structure
 h5.data = data;
 h5.meta = att;
+
+delete(wb);
 
 end
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
